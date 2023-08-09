@@ -25,10 +25,20 @@
         flex-direction: column;
         align-items: center;
 
-        .subscription-card__email-field {
-            width: 480px;
-            max-width: 100%;
-            margin-bottom: 1rem;
+        .subscription-card__inp-holder {
+            .subscription-card__email-field {
+                width: 480px;
+                max-width: 100%;
+            }
+
+            .subscription-card__email-field-error {
+                width: 100%;
+                text-align: right;
+                color: map-get($colors, "danger");
+                font-size: map-get($font-sizes, 12);
+            }
+
+            margin: 0.25rem 0 2rem 0;
         }
 
         .btn-group {
