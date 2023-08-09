@@ -9,6 +9,7 @@ import { createUser } from "sdk";
 
 import subscriptionImage from "../../assets/image/Wavy_Bus-38_Single-01.webp";
 import "./subscription-details.style.scss";
+import { checkEmailValidity } from "../../utilities/validation/email-validator.utility.ts";
 
 const NewsLetterTypes: Record<NewsletterPeriodTypes, string> = {
     daily: "روزانه",
@@ -33,7 +34,7 @@ function SubscriptionDetails() {
     const [requestStatus, setRequestStatus] = useState(requestStatusTypes.idle);
 
     const state = location.state as SubmittedDataUserDetails;
-
+    const isEmailValid = checkEmailValidity(subscriptionData.email);
     const onEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { target } = event;
         setSubscriptionData((prev) => ({ ...prev, [target.name]: target.value }));
@@ -67,14 +68,22 @@ function SubscriptionDetails() {
             </div>
             <h1 className="subscription-card__title">عضویت در خبرنامه</h1>
             <div className="subscription-card__content-holder">
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="ایمیل"
-                    className="subscription-card__email-field"
-                    value={subscriptionData.email}
-                    onChange={onEmailChange}
-                />
+                <div className="subscription-card__inp-holder">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="ایمیل"
+                        className="subscription-card__email-field"
+                        value={subscriptionData.email}
+                        onChange={onEmailChange}
+                    />
+                    {!isEmailValid && (
+                        <div className="subscription-card__email-field-error">
+                            فرمت ایمیل صحیح نمیباشد
+                        </div>
+                    )}
+                </div>
+
                 <ul className="btn-group">
                     {Object.keys(NewsLetterTypes).map((newsLetterKey) => {
                         const letterKey = newsLetterKey as NewsletterPeriodTypes;
@@ -100,7 +109,8 @@ function SubscriptionDetails() {
                     className="subscription-card__submit-btn primary"
                     disabled={
                         !subscriptionData.email.length ||
-                        requestStatus === requestStatusTypes.pending
+                        requestStatus === requestStatusTypes.pending ||
+                        !isEmailValid
                     }
                     type="button"
                     onClick={submitToNewsLetter}
